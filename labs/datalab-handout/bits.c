@@ -166,7 +166,12 @@ NOTES:
  *   Rating: 1
  */
 int evenBits(void) {
-  return 2;
+  int mask1 = 0x55;
+  int mask2 = mask1 << 8;
+  int mask3 = mask1 << 16;
+  int mask4 = mask1 << 24;
+  return mask1+mask2+mask3+mask4;
+
 }
 /* 
  * bitNor - ~(x|y) using only ~ and & 
@@ -176,7 +181,8 @@ int evenBits(void) {
  *   Rating: 1
  */
 int bitNor(int x, int y) {
-  return 2;
+  int sol = ~x & ~y;
+  return sol;
 }
 /* 
  * TMax - return maximum two's complement integer 
@@ -185,7 +191,9 @@ int bitNor(int x, int y) {
  *   Rating: 1
  */
 int tmax(void) {
-  return 2;
+  int a = 1<<31;
+  int sol = ~a;
+  return sol;
 }
 //2
 /* 
@@ -198,7 +206,8 @@ int tmax(void) {
  *   Rating: 2
  */
 int implication(int x, int y) {
-    return 2;
+    int sol = !(x^y);
+    return sol|y;
 }
 /* 
  * divpwr2 - Compute x/(2^n), for 0 <= n <= 30
@@ -209,7 +218,14 @@ int implication(int x, int y) {
  *   Rating: 2
  */
 int divpwr2(int x, int n) {
-    return 2;
+    int mask = 1<<31;
+    int sign = x&mask;
+
+    int bias = (1<<n)&(sign>>(31-n));
+    int end = ~(sign>>31)+1;
+
+    int sol = (x+bias-end)>>n;
+    return sol;
 }
 /* 
  * isNegative - return 1 if x < 0, return 0 otherwise 
@@ -219,7 +235,9 @@ int divpwr2(int x, int n) {
  *   Rating: 2
  */
 int isNegative(int x) {
-  return 2;
+  int mask = 1<<31;
+  int sign = x&mask;
+  return !!sign;
 }
 //3
 /* 
@@ -230,7 +248,13 @@ int isNegative(int x) {
  *   Rating: 3
  */
 int conditional(int x, int y, int z) {
-  return 2;
+  int mask1 = !x<<31>>31;
+  int mask2 = ~mask1;
+
+  int sol1 = y&mask2;
+  int sol2 = z&mask1;
+
+  return sol1+sol2;
 }
 /*
  * rotateRight - Rotate x to the right by n
@@ -241,7 +265,11 @@ int conditional(int x, int y, int z) {
  *   Rating: 3
  */
 int rotateRight(int x, int n) {
-  return 2;
+  int mask_left = (~0) + (1<<n);
+  int offset = 32 + ~n + 1; // -x = ~x+1
+  int left = (x&mask_left) << offset; 
+  int right = (x>>n)&(~(mask_left<<offset));
+  return right | left;
 }
 //4
 /* 
@@ -253,7 +281,9 @@ int rotateRight(int x, int n) {
  *   Rating: 4
  */
 int absVal(int x) {
-  return 2;
+  int sign = x >>31;
+  // 0xffffffff = -1
+  return (x^sign)-sign;
 }
 /* 
  * bang - Compute !x without using !
@@ -263,7 +293,9 @@ int absVal(int x) {
  *   Rating: 4 
  */
 int bang(int x) {
-  return 2;
+  int negx = ~x + 1;
+  int sol = (~(x|negx)>>31) & 1;
+  return sol;
 }
 //float
 /* 
@@ -278,7 +310,12 @@ int bang(int x) {
  *   Rating: 2
  */
 unsigned float_abs(unsigned uf) {
-  return 2;
+  //if Nan; if exp all 1; if frac all 0
+  if((uf&0x7f800000)>>23 == 255 && uf<<9){
+    return uf;
+  }
+  // mask: 0x111...11
+  return uf&0x7fffffff;
 }
 /* 
  * float_pwr2 - Return bit-level equivalent of the expression 2.0^x
@@ -294,7 +331,27 @@ unsigned float_abs(unsigned uf) {
  *   Rating: 4
  */
 unsigned float_pwr2(int x) {
-    return 2;
+    unsigned exp,frac;
+    // greater than maximum
+    if(x>127){
+      return 0x7f800000;
+    }
+    // normalized
+    else if(x >= (1-127)){
+      exp = x+127;
+      frac = 0;
+      return exp<<23 | frac;
+    }
+    // denormalized
+    else if(x>=(1-127-23)){
+      exp = 0;
+      frac = 1 << (x-(1-127-23));
+      return exp<<23 | frac;
+    }
+    // less than minimum
+    else{
+      return 0x00000000;
+    }
 }
 /* 
  * float_i2f - Return bit-level equivalent of expression (float) x
@@ -306,5 +363,54 @@ unsigned float_pwr2(int x) {
  *   Rating: 4
  */
 unsigned float_i2f(int x) {
-  return 2;
+  if(x==0){
+    return 0;
+  }
+  if(x==0x80000000){
+    return 0xcf000000;
+  }
+  // bias
+  unsigned exp_bias = 0;
+  if(x){
+    exp_bias = 0x7f;//127
+  }
+  // positive/negative
+  unsigned abs_x = x;
+  unsigned sign = x & 0x80000000;
+  if(sign){
+    abs_x = ~x+1;
+  }
+  // use while loop to right shift and use index to indicate the most left 1
+  int index = 0;
+  unsigned temp = abs_x;
+  while(temp){
+    temp = temp >> 1;
+    index = index + (temp && 0x1);
+  }
+  // calculate exponent and 
+  unsigned exponent = index + exp_bias;
+  int left_shift = 31 + (~index + 1);
+  unsigned frac = abs_x << left_shift;
+
+  unsigned tail = frac & 0xff;
+  // leave 9 slots for sign and exponent
+  frac = (frac >> 8) & 0x7fffff;
+  /*
+  * see if it's necessary to add increase frac by 1
+  * if greater than 0.5, than increase
+  * equals to 0.5 and the last bit is 1, increment, round up to even
+  */
+  int tail_7th_bit = tail & 0x80;
+  int tail_left_bits = tail & 0x7f;
+  int tail_l_128 = tail_7th_bit && tail_left_bits;
+  frac = frac + (tail_l_128 || (tail_7th_bit &&(frac & 1)));
+  // if frac has a carry after a possible increment 
+  // if so, frac is 0 and exponent increase by 1
+  if(frac >> 23){
+    frac = 0;
+    exponent = exponent + 1;
+  }
+  unsigned result = sign | (exponent<<23) | frac;
+  return result;
+
 }
