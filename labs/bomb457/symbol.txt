@@ -17,9 +17,9 @@ SYMBOL TABLE:
 0000000000400cd0 l    d  .plt.got	0000000000000000              .plt.got
 0000000000400ce0 l    d  .text	0000000000000000              .text
 0000000000402404 l    d  .fini	0000000000000000              .fini
-0000000000402410 l    d  .rodata	0000000000000000              .rodata
-0000000000402b14 l    d  .eh_frame_hdr	0000000000000000              .eh_frame_hdr
-0000000000402c48 l    d  .eh_frame	0000000000000000              .eh_frame
+0000000000402420 l    d  .rodata	0000000000000000              .rodata
+0000000000402b6c l    d  .eh_frame_hdr	0000000000000000              .eh_frame_hdr
+0000000000402ca0 l    d  .eh_frame	0000000000000000              .eh_frame
 0000000000603e00 l    d  .init_array	0000000000000000              .init_array
 0000000000603e08 l    d  .fini_array	0000000000000000              .fini_array
 0000000000603e10 l    d  .jcr	0000000000000000              .jcr
@@ -46,7 +46,7 @@ SYMBOL TABLE:
 0000000000603e00 l     O .init_array	0000000000000000              __frame_dummy_init_array_entry
 0000000000000000 l    df *ABS*	0000000000000000              bomb.c
 0000000000000000 l    df *ABS*	0000000000000000              phases.c
-00000000004025d0 l     O .rodata	0000000000000010              array.3163
+0000000000402620 l     O .rodata	0000000000000040              array.3163
 0000000000000000 l    df *ABS*	0000000000000000              support.c
 0000000000401260 l     F .text	0000000000000051              sig_handler
 0000000000000000 l    df *ABS*	0000000000000000              driverlib.c
@@ -56,13 +56,13 @@ SYMBOL TABLE:
 00000000004018ed l     F .text	0000000000000087              rio_read
 0000000000401974 l     F .text	0000000000000083              rio_readlineb
 0000000000000000 l    df *ABS*	0000000000000000              crtstuff.c
-0000000000403198 l     O .eh_frame	0000000000000000              __FRAME_END__
+00000000004031f0 l     O .eh_frame	0000000000000000              __FRAME_END__
 0000000000603e10 l     O .jcr	0000000000000000              __JCR_END__
 0000000000000000 l    df *ABS*	0000000000000000              
 0000000000603e08 l       .init_array	0000000000000000              __init_array_end
 0000000000603e18 l     O .dynamic	0000000000000000              _DYNAMIC
 0000000000603e00 l       .init_array	0000000000000000              __init_array_start
-0000000000402b14 l       .eh_frame_hdr	0000000000000000              __GNU_EH_FRAME_HDR
+0000000000402b6c l       .eh_frame_hdr	0000000000000000              __GNU_EH_FRAME_HDR
 0000000000604000 l     O .got.plt	0000000000000000              _GLOBAL_OFFSET_TABLE_
 0000000000402400 g     F .text	0000000000000002              __libc_csu_fini
 0000000000401433 g     F .text	0000000000000041              skip
@@ -87,7 +87,7 @@ SYMBOL TABLE:
 0000000000402404 g     F .fini	0000000000000000              _fini
 000000000060561c g     O .bss	0000000000000004              num_input_strings
 0000000000000000       F *UND*	0000000000000000              printf@@GLIBC_2.2.5
-0000000000401087 g     F .text	000000000000005b              phase_5
+000000000040107d g     F .text	0000000000000068              phase_5
 00000000004013f4 g     F .text	0000000000000002              initialize_bomb_solve
 00000000004013f6 g     F .text	000000000000003d              blank_line
 00000000004019f7 g     F .text	0000000000000736              submitr
@@ -111,15 +111,15 @@ SYMBOL TABLE:
 0000000000000000       F *UND*	0000000000000000              fprintf@@GLIBC_2.2.5
 0000000000000000  w      *UND*	0000000000000000              __gmon_start__
 0000000000000000       F *UND*	0000000000000000              strtol@@GLIBC_2.2.5
-00000000004011c6 g     F .text	0000000000000040              fun7
-0000000000402418 g     O .rodata	0000000000000000              .hidden __dso_handle
+00000000004011c9 g     F .text	0000000000000040              fun7
+0000000000402428 g     O .rodata	0000000000000000              .hidden __dso_handle
 0000000000000000       F *UND*	0000000000000000              memcpy@@GLIBC_2.14
 0000000000604360 g     O .data	0000000000000400              lab
-0000000000402410 g     O .rodata	0000000000000004              _IO_stdin_used
+0000000000402420 g     O .rodata	0000000000000004              _IO_stdin_used
 0000000000604160 g     O .data	0000000000000018              n22
 0000000000605380 g     O .data	0000000000000280              host_table
 0000000000604b60 g     O .data	0000000000000400              authkey
-0000000000400feb g     F .text	000000000000003f              func4
+0000000000400feb g     F .text	0000000000000035              func4
 0000000000604120 g     O .data	0000000000000018              n1
 00000000004012d1 g     F .text	0000000000000015              string_length
 0000000000402390 g     F .text	0000000000000065              __libc_csu_init
@@ -129,7 +129,7 @@ SYMBOL TABLE:
 0000000000604180 g     O .data	0000000000000018              n32
 0000000000605cd0 g       .bss	0000000000000000              _end
 0000000000400ce0 g     F .text	0000000000000000              _start
-0000000000401206 g     F .text	0000000000000051              secret_phase
+0000000000401209 g     F .text	0000000000000051              secret_phase
 0000000000605620 g     O .bss	0000000000000008              infile
 0000000000401792 g     F .text	0000000000000029              sigalrm_handler
 000000000040212d g     F .text	0000000000000028              init_timeout
@@ -143,9 +143,9 @@ SYMBOL TABLE:
 00000000004015c7 g     F .text	0000000000000126              read_line
 0000000000604200 g     O .data	0000000000000018              n45
 00000000004012e6 g     F .text	000000000000004d              strings_not_equal
-000000000040102a g     F .text	000000000000005d              phase_4
+0000000000401020 g     F .text	000000000000005d              phase_4
 0000000000000000       F *UND*	0000000000000000              fopen@@GLIBC_2.2.5
-00000000004010e2 g     F .text	00000000000000e4              phase_6
+00000000004010e5 g     F .text	00000000000000e4              phase_6
 0000000000605c80 g     O .bss	0000000000000050              scratch
 000000000040231e g     F .text	000000000000006e              driver_post
 0000000000401474 g     F .text	00000000000000db              send_msg
